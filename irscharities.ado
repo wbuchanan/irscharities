@@ -10,13 +10,13 @@
 * Program Output - dataset name specified by the save option                   *
 *                                                                              *
 * Lines -                                                                      *
-*     1336                                                                     *
+*     1306                                                                     *
 *                                                                              *
 ********************************************************************************
 		
 *! irscharities
 *! v 1.0.2
-*! 20150316
+*! 18APR2016
 
 // Drop program from memory if previously loaded
 cap prog drop irscharities
@@ -29,7 +29,7 @@ prog def irscharities
 
 	// Syntax used to parse command
 	syntax anything(name=state id="State/Regions required"), SAve(string) [  ///    
-	NTEEnfix REPlace ]
+	NTEEnfix REPlace Load ]
 
 	// Remove file extension
 	loc save = subinstr("`save'",".dta","",.)
@@ -1246,7 +1246,7 @@ prog def irscharities
 		
 		// Creates new NTEE Code variable with numeric values only
 		qui: g nteecode2 = `nteelet' + `nteenum'
-		
+				
 		/* 	This Block fixes some of the numeric activity codes by 
 			reassigning values to unassigned values within the same series.   */
 		qui: replace nteecode2 = cond(nteecode == "A6A", "171",				 ///   
@@ -1255,12 +1255,10 @@ prog def irscharities
 								 cond(nteecode == "A6E", "174",				 ///    
 								 cond(nteecode == "G9B", "797",				 ///    
 								 cond(nteecode == "H9B", "897",				 ///   
-								 cond(nteecode == "N6A", "1459", nteecode)))))))
+								 cond(nteecode == "N6A", "1459", nteecode2)))))))
 
 		// Convert to numeric types
-		qui: destring nteecode2, replace
-		
-		qui: destring `nteelet', replace
+		qui: destring `nteelet' nteecode2, replace
 		
 		// Make the NTEE Class type variable
 		qui: g byte nteeclass = `nteelet'
@@ -1301,6 +1299,9 @@ prog def irscharities
 		
 	// Bring back original data into memory
 	restore
+	
+	// Check load option
+	if `"`load'"' != "" qui: use `"`save'.dta"', clear
 	
 end
 
