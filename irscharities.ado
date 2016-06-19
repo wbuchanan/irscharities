@@ -192,7 +192,7 @@ prog def irscharities
 			qui: char _dta[dlsite`i'] `"`: word `i' of `dlurl''"'
 			
 			// Add download time as characteristic of the data set
-			qui: char _dta[dltime`i'] `"`: word `i' if `dltime''"'
+			// qui: char _dta[dltime`i'] `"`: word `i' if `dltime''"'
 			
 		} // End of Loop over states to add characteristics
 		
